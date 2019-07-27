@@ -15,6 +15,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <blacklist.h>
 
 #define ENDLESSH_VERSION           1.0
 
@@ -110,6 +111,14 @@ client_new(int fd, long long send_next)
         logmsg(LOG_DEBUG, "setsockopt(%d, SO_RCVBUF, %d) = %d", fd, value, r);
         if (r == -1)
             logmsg(LOG_DEBUG, "errno = %d, %s", errno, strerror(errno));
+
+	struct blacklist *cookie = blacklist_open();
+	if (cookie) {
+	  int res = blacklist_r(cookie, BLACKLIST_ABUSIVE_BEHAVIOR, fd, "endlessh user");
+	  blacklist_close(cookie);
+	} else {
+	  logmsg(LOG_DEBUG, "blacklist fails to open");
+	}
 
         /* Get IP address */
         struct sockaddr_storage addr;
@@ -732,6 +741,8 @@ main(int argc, char **argv)
                     exit(EXIT_FAILURE);
             }
         }
+
+
 
         /* Check for new incoming connections */
         if (fds.revents & POLLIN) {

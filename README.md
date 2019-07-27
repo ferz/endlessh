@@ -109,4 +109,38 @@ The feature test macros on these systems isn't reliable, so you may also
 need to use `-D__EXTENSIONS__` in `CFLAGS`.
 
 
+### BSD and Blacklistd
+
+Originaly developed for NetBSD, blacklistd is adopted from FreeBSD and OpenBSD, maybe from DragonFlyBSD in next future.
+
+https://www.unitedbsd.com/d/63-how-to-use-blacklistd8-with-npf-as-a-fail2ban-replacement
+https://reviews.freebsd.org/D8079
+
+I was investigating about sendmail and blacklistd so I've decided to add blacklistd support to endlessh.
+
+    received 0 from poll()
+    received 1 from poll()
+    processing type=3 fd=6 remote=::ffff:93.39.143.244:10313 msg=endlessh user uid=0 gid=0
+    listening socket: ::ffff:144.76.91.66:22
+    look:   target:::ffff:144.76.91.66:22, proto:6, family:28, uid:0, name:=, nfail:*, duration:*
+    check:  target:587, proto:6, family:*, uid:*, name:*, nfail:3, duration:86400
+    check:  target:25, proto:6, family:*, uid:*, name:*, nfail:3, duration:86400
+    check:  target:22, proto:6, family:*, uid:*, name:*, nfail:3, duration:86400
+    found:  target:22, proto:6, family:*, uid:*, name:*, nfail:3, duration:86400
+    conf_apply: merge:      target:22, proto:6, family:*, uid:*, name:*, nfail:3, duration:86400
+    conf_apply: to: target:::ffff:144.76.91.66:22, proto:6, family:28, uid:0, name:=, nfail:*, duration:*
+    conf_apply: result:     target:::ffff:144.76.91.66:22, proto:6, family:28, uid:*, name:*, nfail:3, duration:86400
+    Applied address ::ffff:93.39.143.244:22
+    Applied address ::ffff:93.39.143.244:22
+    process: initial db state for ::ffff:93.39.143.244:10313: count=0/3 last=1970/01/01 00:00:00 now=2019/07/27 16:15:03
+    run /usr/libexec/blacklistd-helper [control add blacklistd tcp ::ffff:93.39.143.244 128 22 ]
+    /usr/libexec/blacklistd-helper: Unsupported packet filter
+    add returns (null)
+    process: final db state for ::ffff:93.39.143.244:10313: count=3/3 last=2019/07/27 16:15:03 now=2019/07/27 16:15:03
+
+
+As you can see I've not fixed `/usr/libexec/blacklistd-helper` yet.  I'm not really skilled to instruct pf so I would like if
+someone with more pf knowledge will fix it to support endlessh.
+
+
 [np]: https://nullprogram.com/blog/2019/03/22/

@@ -2,7 +2,7 @@
 CC      = cc
 CFLAGS  = -std=c99 -Wall -Wextra -Wno-missing-field-initializers -Os
 LDFLAGS = -ggdb3
-LDLIBS  =
+LDLIBS  = -lblacklist
 PREFIX  = /usr/local
 
 all: endlessh
