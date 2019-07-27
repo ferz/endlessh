@@ -114,7 +114,7 @@ client_new(int fd, long long send_next)
 
 	struct blacklist *cookie = blacklist_open();
 	if (cookie) {
-	  int res = blacklist_r(cookie, BLACKLIST_ABUSIVE_BEHAVIOR, fd, "endlessh user");
+	  blacklist_r(cookie, BLACKLIST_ABUSIVE_BEHAVIOR, fd, "endlessh user");
 	  blacklist_close(cookie);
 	} else {
 	  logmsg(LOG_DEBUG, "blacklist fails to open");
